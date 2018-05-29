@@ -1,5 +1,7 @@
 (in-package :mcclim-render-internals)
 
+(declaim (optimize speed (safety 0) (debug 0)))
+
 ;;;
 ;;; Image operatiosaa
 ;;;

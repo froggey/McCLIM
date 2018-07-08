@@ -108,9 +108,15 @@
 			image x y width height
 			to-x to-y
 			clip-region)
-  (when (or (not (rectanglep clip-region))
-            (not (region-contains-region-p clip-region (make-rectangle* to-x to-y (+ to-x width) (+ to-y height)))))
-    (warn "copy image not correct"))
+  ;; silenced for demo 4
+  #+(or)
+  (when (not (rectanglep clip-region))
+    (warn "copy image not correct [non-rectangular clip region ~S]" clip-region))
+  #+(or)
+  (when (not (region-contains-region-p clip-region (make-rectangle* to-x to-y (+ to-x width) (+ to-y height))))
+    (warn "copy image not correct [copy region ~S outside clip region ~S]"
+          (make-rectangle* to-x to-y (+ to-x width) (+ to-y height))
+          clip-region))
   (let ((region
          (if (typep image 'rgba-image-mixin)
              (blend-image image x y width height

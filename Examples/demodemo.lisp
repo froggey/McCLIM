@@ -69,6 +69,7 @@ denoted by this symbol."
                  (vertically (:equalize-width t)
                    (make-demo-button "CLIM-Fig"  'clim-fig)
                    (make-demo-button "Calculator"  'calculator-demo:calculator-app)
+                   #+(or) ; weird rendering glitches
                    (make-demo-button "Method Browser" 'method-browser)
                    (make-demo-button "Address Book"  'address-book)
                    (make-demo-button "Puzzle"  'puzzle)
@@ -76,6 +77,7 @@ denoted by this symbol."
                    (make-demo-button "Logic Cube" 'logic-cube)
                    (make-demo-button "Gadget Test"  'gadget-test)
                    (make-demo-button "D&D Translator" 'drag-test)
+                   #+(or) ; crash
                    (make-demo-button "Draggable Graph" 'draggable-graph-demo)
 		   (make-pane 'push-button
 			      :label "Font Selector"
@@ -88,6 +90,7 @@ denoted by this symbol."
                    (make-demo-button "Summation" 'summation)
                    (make-demo-button "Slider demo" 'sliderdemo:sliderdemo)
                    (make-demo-button "German Towns" 'town-example:town-example)
+                   #+(or) ; what does this even do?
                    (make-demo-button "Data Graph Toy" 'graph-toy)
                    ;; this demo invokes the debugger
                    #+ (or) (make-demo-button "Traffic lights" 'traffic-lights)))
@@ -98,6 +101,7 @@ denoted by this symbol."
                    (make-demo-button "Table Test" 'table-test)
                    (make-demo-button "Scroll Test" 'Scroll-test)
                    (make-demo-button "List Test" 'list-test)
+                   #+(or) ; complains about missing pointer grabbing
                    (make-demo-button "Option Test" 'option-test)
                    (make-demo-button "HBOX Test"  'hbox-test)
                    (make-demo-button "Text Size Test"  'text-size-test)

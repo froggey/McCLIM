@@ -35,7 +35,11 @@
 (defmacro deficon (var pathname)
   `(eval-when (:load-toplevel :execute)
      (defparameter ,var (make-pattern-from-bitmap-file
-                         ,(merge-pathnames pathname *icon-path*)
+                         ,(merge-pathnames
+                           (uiop:parse-unix-namestring
+                            pathname
+                            :defaults *icon-path*)
+                           *icon-path*)
                          :format :xpm :port nil))))
 
 (defvar *icon-cache* (make-hash-table  :test #'equal))
@@ -45,14 +49,16 @@
   (or (gethash filename *icon-cache*)
       (setf (gethash filename *icon-cache*)
             (make-pattern-from-bitmap-file
-             (merge-pathnames filename
+             (merge-pathnames (uiop:parse-unix-namestring
+                               filename
+                               :defaults *icon-path*)
                               *icon-path*)
              :format :xpm :port nil))))
 
 ;; Don't particularly need these any more..
-(deficon *folder-icon*   #P"folder.xpm")
-(deficon *document-icon* #P"document.xpm")
-(deficon *object-icon*   #P"simple-object.xpm")
+(deficon *folder-icon*   "folder.xpm")
+(deficon *document-icon* "document.xpm")
+(deficon *object-icon*   "simple-object.xpm")
 
 ;; Icon functions
 
@@ -70,9 +76,7 @@
                               (cl-fad:list-directory
                                (cl-fad:pathname-directory-pathname *icon-path*)))))
     (dolist (pn pathnames)
-      (standard-icon (namestring (make-pathname :host (pathname-host pn)
-                                                :name (pathname-name pn)
-                                                :type (pathname-type pn)))))))
+      (standard-icon (format nil "~A.~A" (pathname-name pn) (pathname-type pn))))))
 
 (eval-when (:load-toplevel :execute)
   (precache-icons))

@@ -1264,6 +1264,8 @@ if you are interested in fixing this."))
                           "View"
                           (format nil "View ~A" pathname)))
                  (t
+                  nil
+                  #+(or) ; these all use run/background run. no good.
                   (multiple-value-bind (command doc pointer-doc)
                       (find-viewspec pathname)
                     (let ((mime-type (pathname-mime-type pathname)))
@@ -1417,6 +1419,7 @@ if you are interested in fixing this."))
   (object)
   (list object))
 
+#+(or) ; Doesn't seem to work on png images. stick with the native image-viewer instead
 (define-command (com-display-image :name t :command-table filesystem-commands
                                            :menu t)
     ((image-pathname 'pathname

@@ -12,7 +12,7 @@
    (width      :initform 0)
    (height     :initform 0)
    (dx         :initform 0)
-   (dy         :initfomr 0)
+   (dy         :initform 0)
    (mez-pixels :initform nil)
    (mez-window :initform nil)
    (mez-frame  :initform nil)

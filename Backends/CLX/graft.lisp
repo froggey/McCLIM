@@ -27,7 +27,7 @@
   (let ((screen (clx-port-screen (port graft))))
     (ecase units
       (:device (xlib:screen-width screen))
-      (:inches (/ (xlib:screen-width-in-millimeters screen) 25.4s0))
+      (:inches (/ (xlib:screen-width-in-millimeters screen) 25.4f0))
       (:millimeters (xlib:screen-width-in-millimeters screen))
       (:screen-sized 1))))
 
@@ -35,8 +35,6 @@
   (let ((screen (clx-port-screen (port graft))))
     (ecase units
       (:device (xlib:screen-height screen))
-      (:inches (/ (xlib:screen-height-in-millimeters screen) 25.4s0))
+      (:inches (/ (xlib:screen-height-in-millimeters screen) 25.4f0))
       (:millimeters (xlib:screen-height-in-millimeters screen))
       (:screen-sized 1))))
-
-

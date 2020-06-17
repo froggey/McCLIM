@@ -360,7 +360,7 @@ or NIL if the current transformation is the identity transformation."
           (setq y (ecase align-y
                     (:top (+ y ascent))                              ; OK
                     #+ (or) (:baseline y)                            ; OK
-                    (:center (+ y ascent (- (/ text-height 2.0s0)))) ; See :around for multiline
+                    (:center (+ y ascent (- (/ text-height 2.0))))   ; See :around for multiline
                     (:baseline* y)                                   ; See :around for multiline
                     (:bottom (- y descent))))))                      ; See :around for multiline
       (unless (eq align-x :left)
@@ -369,7 +369,7 @@ or NIL if the current transformation is the identity transformation."
         (let ((text-width (clim:text-size medium string :start start :end end)))
           (setq x (- (- x 0.5) (ecase align-x
                                  ;;(:left 0)
-                                 (:center (/ text-width 2.0s0))
+                                 (:center (/ text-width 2.0))
                                  (:right text-width))))))
       (clim-sys:with-lock-held (*draw-font-lock*)
         (freetype-draw-glyphs medium clim-clx::mirror clim-clx::gc x y string

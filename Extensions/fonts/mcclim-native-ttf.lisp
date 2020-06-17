@@ -238,8 +238,8 @@
   (advance-width 0     :read-only t)
   (advance-height 0    :read-only t)
   ;; untransformed values
-  (advance-width* 0s0  :read-only t)
-  (advance-height* 0s0 :read-only t))
+  (advance-width* 0f0  :read-only t)
+  (advance-height* 0f0 :read-only t))
 
 
 (defclass cached-truetype-font (truetype-font)

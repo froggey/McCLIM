@@ -1,5 +1,22 @@
 (in-package #:mcclim-render-internals)
 
+(defconstant +alpha-pos+ 24)
+(defconstant +red-pos+ 16)
+(defconstant +green-pos+ 8)
+(defconstant +blue-pos+ 0)
+
+(defmacro ldb-a (argb)
+  `(ldb (byte 8 +alpha-pos+) ,argb))
+
+(defmacro ldb-r (argb)
+  `(ldb (byte 8 +red-pos+) ,argb))
+
+(defmacro ldb-g (argb)
+  `(ldb (byte 8 +green-pos+) ,argb))
+
+(defmacro ldb-b (argb)
+  `(ldb (byte 8 +blue-pos+) ,argb))
+
 (defmacro do-regions (((src-j dest-j y1s y1d y2)
                        (src-i dest-i x1s x1d x2)
                        &key backward) &body body)
@@ -85,10 +102,10 @@ top-left. Useful when we iterate over the same array and mutate its state."
 (defmacro let-rgba (((r g b a) elt) &body body)
   (alexandria:once-only (elt)
     `(let (,@(when a
-               `((,a (ldb (byte 8 24) ,elt))))
-           (,r (ldb (byte 8 16) ,elt))
-           (,g (ldb (byte 8 08) ,elt))
-           (,b (ldb (byte 8 00) ,elt)))
+               `((,a (ldb-a ,elt))))
+           (,r (ldb-r ,elt))
+           (,g (ldb-g ,elt))
+           (,b (ldb-b ,elt)))
        ,@body)))
 
 (declaim (inline color-value->octet)
@@ -191,10 +208,10 @@ top-left. Useful when we iterate over the same array and mutate its state."
 (defun octet-blend-function* (r.fg g.fg b.fg a.fg r.bg g.bg b.bg a.bg)
   (declare (optimize speed))
   (let ((gamma (%prelerp a.fg a.bg a.bg)))
-    (logior (ash gamma                                          24)
-            (ash (%byte-blend-value2 r.fg r.bg a.fg a.bg gamma) 16)
-            (ash (%byte-blend-value2 g.fg g.bg a.fg a.bg gamma) 8)
-            (ash (%byte-blend-value2 b.fg b.bg a.fg a.bg gamma) 0))))
+    (logior (ash gamma                                          +alpha-pos+)
+            (ash (%byte-blend-value2 r.fg r.bg a.fg a.bg gamma) +red-pos+)
+            (ash (%byte-blend-value2 g.fg g.bg a.fg a.bg gamma) +green-pos+)
+            (ash (%byte-blend-value2 b.fg b.bg a.fg a.bg gamma) +blue-pos+))))
 
 (declaim (inline octet-rgba-blend-function)
          (ftype (function (octet octet octet octet octet octet octet octet)
@@ -304,15 +321,15 @@ top-left. Useful when we iterate over the same array and mutate its state."
   (declare (type octet r g b a)
            (optimize (speed 3) (safety 0)))
   (the argb-pixel
-       (logior (the argb-pixel (ash a 24))
-               (the argb-pixel (ash r 16))
-               (the argb-pixel (ash g 8))
-               (the argb-pixel (ash b 0)))))
+       (logior (the argb-pixel (ash a +alpha-pos+))
+               (the argb-pixel (ash r +red-pos+))
+               (the argb-pixel (ash g +green-pos+))
+               (the argb-pixel (ash b +blue-pos+)))))
 
 (defun %rgba->vals (rgba)
   (declare (type argb-pixel rgba)
            (optimize (speed 3) (safety 0)))
-  (values (the octet (ldb (byte 8 16) rgba))
-          (the octet (ldb (byte 8 08) rgba))
-          (the octet (ldb (byte 8 00) rgba))
-          (the octet (ldb (byte 8 24) rgba))))
+  (values (the octet (ldb-r rgba))
+          (the octet (ldb-g rgba))
+          (the octet (ldb-b rgba))
+          (the octet (ldb-a rgba))))

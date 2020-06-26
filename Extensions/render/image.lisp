@@ -151,7 +151,7 @@
 (defun %fill-image-static-ink-flipping/blend (dst-array dst-width source-rgba x x2 y y2)
   (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
-           (type image-index dst-width x x2 y y2)
+           (type image-index dst-width x y)
            (type argb-pixel source-rgba))
   (let-rgba ((source-r source-g source-b source-a) source-rgba)
     (do-region-pixels ((dst-width (di  dx dy) :x1 x :x2 x2 :y1 y :y2 y2)
@@ -168,7 +168,7 @@
 (defun %fill-image-static-ink-flipping (dst-array dst-width source-rgba x x2 y y2)
   (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
-           (type image-index dst-width x x2 y y2)
+           (type image-index dst-width x y)
            (type argb-pixel source-rgba))
   (do-region-pixels ((dst-width (di  dx dy) :x1 x :x2 x2 :y1 y :y2 y2)
                      (nil       (nil sx sy) :x1 x        :y1 y))
@@ -178,16 +178,16 @@
 (defun %fill-image-static-ink-copy (dst-array dst-width source-rgba x x2 y y2)
   (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
-           (type image-index dst-width x x2 y y2)
+           (type image-index dst-width x y)
            (type argb-pixel source-rgba))
   (do-region-pixels ((dst-width (di  dx dy) :x1 x :x2 x2 :y1 y :y2 y2)
                      (nil       (nil sx sy) :x1 x        :y1 y))
-      (setf (row-major-aref dst-array di) source-rgba)))
+    (setf (row-major-aref dst-array di) source-rgba)))
 
 (defun %fill-image-static-ink-blend (dst-array dst-width source-rgba x x2 y y2)
   (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
-           (type image-index dst-width x x2 y y2)
+           (type image-index dst-width x y)
            (type argb-pixel source-rgba))
   (let-rgba ((source-r source-g source-b source-a) source-rgba)
     (do-region-pixels ((dst-width (di  dx dy) :x1 x :x2 x2 :y1 y :y2 y2)
@@ -230,7 +230,7 @@
 (defun %fill-image-stenciled-static-ink-flipping/blend (dst-array dst-width source-rgba x x2 y y2 stencil-array stencil-dx stencil-dy stencil-width stencil-height)
   (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
-           (type image-index dst-width x x2 y y2)
+           (type image-index dst-width x y)
            (type argb-pixel source-rgba)
            (type stencil-array stencil-array)
            (type fixnum stencil-width stencil-height))
@@ -250,7 +250,7 @@
 (defun %fill-image-stenciled-static-ink-blend (dst-array dst-width source-rgba x x2 y y2 stencil-array stencil-dx stencil-dy stencil-width stencil-height)
   (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
-           (type image-index dst-width x x2 y y2)
+           (type image-index dst-width x y)
            (type argb-pixel source-rgba)
            (type stencil-array stencil-array)
            (type fixnum stencil-width stencil-height))

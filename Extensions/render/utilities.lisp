@@ -1,5 +1,12 @@
 (in-package #:mcclim-render-internals)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defvar *optimize* '(optimize (speed 3)) "Go fast")
+  (defvar *optimize-unsafe* '(optimize (speed 3) (safety 0) (debug 0)) "Go faster")
+
+  #+(or)(defvar *optimize* '(optimize (speed 0) (safety 3) (debug 3)))
+  #+(or)(defvar *optimize-unsafe* '(optimize (speed 0) (safety 3) (debug 3))))
+
 (defconstant +alpha-pos+ 24)
 (defconstant +red-pos+ 16)
 (defconstant +green-pos+ 8)
@@ -136,7 +143,7 @@ top-left. Useful when we iterate over the same array and mutate its state."
 (declaim (inline octet-mult)
          (ftype (function (octet (integer -255 255)) (integer -255 255)) octet-mult))
 (defun octet-mult (a b)
-  (declare (optimize speed)
+  (declare #.*optimize*
            (type octet a)
            (type (integer -255 255) b))
   #+no (truncate (* a (+ b (logxor #x1 (ldb (byte 1 8) b)))) 256)
@@ -147,7 +154,7 @@ top-left. Useful when we iterate over the same array and mutate its state."
 (declaim (inline %lerp)
          (ftype (function (octet octet octet) octet) %lerp))
 (defun %lerp (p q a)
-  (declare (optimize speed)
+  (declare #.*optimize*
            (type octet p q a))
   (logand #xFF (+ p (octet-mult a (the fixnum (- q p))))))
 
@@ -172,7 +179,7 @@ top-left. Useful when we iterate over the same array and mutate its state."
 (declaim (inline %byte-blend-value)
          (ftype (function (octet octet octet octet) octet) %byte-blend-value))
 (defun %byte-blend-value (fg bg a.fg a.bg)
-  (declare (optimize speed))
+  (declare #.*optimize*)
   (let ((gamma (%prelerp a.fg a.bg a.bg))
         (value (%lerp (octet-mult bg a.bg) fg a.fg)))
     #+no (if (<= gamma 1) ; TODO values are not octets
@@ -183,7 +190,7 @@ top-left. Useful when we iterate over the same array and mutate its state."
 (declaim (inline %byte-blend-value2)
          (ftype (function (octet octet octet octet octet) octet) %byte-blend-value2))
 (defun %byte-blend-value2 (fg bg a.fg a.bg gamma)
-  (declare (optimize speed)
+  (declare #.*optimize*
            (type octet fg bg a.fg a.bg gamma))
   (let ((value (%lerp (octet-mult bg a.bg) fg a.fg)))
     (declare (type octet value))
@@ -206,7 +213,7 @@ top-left. Useful when we iterate over the same array and mutate its state."
             gamma)))
 
 (defun octet-blend-function* (r.fg g.fg b.fg a.fg r.bg g.bg b.bg a.bg)
-  (declare (optimize speed))
+  (declare #.*optimize*)
   (let ((gamma (%prelerp a.fg a.bg a.bg)))
     (logior (ash gamma                                          +alpha-pos+)
             (ash (%byte-blend-value2 r.fg r.bg a.fg a.bg gamma) +red-pos+)
@@ -319,7 +326,7 @@ top-left. Useful when we iterate over the same array and mutate its state."
 (declaim (inline %rgba->vals %vals->rgba))
 (defun %vals->rgba (r g b &optional (a #xff))
   (declare (type octet r g b a)
-           (optimize (speed 3) (safety 0)))
+           #.*optimize-unsafe*)
   (the argb-pixel
        (logior (the argb-pixel (ash a +alpha-pos+))
                (the argb-pixel (ash r +red-pos+))
@@ -328,7 +335,7 @@ top-left. Useful when we iterate over the same array and mutate its state."
 
 (defun %rgba->vals (rgba)
   (declare (type argb-pixel rgba)
-           (optimize (speed 3) (safety 0)))
+           #.*optimize-unsafe*)
   (values (the octet (ldb-r rgba))
           (the octet (ldb-g rgba))
           (the octet (ldb-b rgba))

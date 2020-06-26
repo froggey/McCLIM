@@ -100,7 +100,7 @@
   "Call FUNCTION for each pixel on the polygon covered by
 SCANLINE. The pixels are scanned in increasing X. The sweep can
 be limited to a range by START (included) or/and END (excluded)."
-  (declare (optimize speed (debug 0) (safety 0) (space 2))
+  (declare #.*optimize-unsafe*
            (type (function (fixnum fixnum fixnum) *) function)
            (type fixnum start end))
   (let* ((x-min (max start (aa::cell-x (first scanline))))

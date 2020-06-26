@@ -28,7 +28,7 @@
           (defun ,name (src-array dst-array x1s y1s x1d y1d x2 y2)
             (declare (type image-index x1s y1s x1d y1d x2 y2)
                      (type argb-pixel-array src-array dst-array)
-                     (optimize (speed 3) (safety 0)))
+                     #.*optimize-unsafe*)
             (do-regions ((src-j dest-j y1s y1d y2)
                          (src-i dest-i x1s x1d x2) ,@(when backwardp
                                                        `(:backward t)))
@@ -71,7 +71,7 @@
           (defun ,name (src-array dst-array x1s y1s x1d y1d x2 y2)
             (declare (type image-index x1s y1s x1d y1d x2 y2)
                      (type argb-pixel-array src-array dst-array)
-                     (optimize (speed 3) (safety 0)))
+                     #.*optimize-unsafe*)
             (do-regions ((src-j dest-j y1s y1d y2)
                          (src-i dest-i x1s x1d x2) ,@(when backwardp
                                                        `(:backward t)))
@@ -149,7 +149,7 @@
                      (t (values :blend (%vals->rgba r.fg g.fg b.fg a)))))))))))
 
 (defun %fill-image-static-ink-flipping/blend (dst-array dst-width source-rgba x x2 y y2)
-  (declare (optimize (speed 3) (safety 0) (debug 1))
+  (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
            (type image-index dst-width x x2 y y2)
            (type argb-pixel source-rgba))
@@ -166,7 +166,7 @@
                  r.bg g.bg b.bg a.bg))))))
 
 (defun %fill-image-static-ink-flipping (dst-array dst-width source-rgba x x2 y y2)
-  (declare (optimize (speed 3) (safety 0) (debug 1))
+  (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
            (type image-index dst-width x x2 y y2)
            (type argb-pixel source-rgba))
@@ -176,7 +176,7 @@
             (logxor source-rgba (row-major-aref dst-array di)))))
 
 (defun %fill-image-static-ink-copy (dst-array dst-width source-rgba x x2 y y2)
-  (declare (optimize (speed 3) (safety 0) (debug 1))
+  (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
            (type image-index dst-width x x2 y y2)
            (type argb-pixel source-rgba))
@@ -185,7 +185,7 @@
       (setf (row-major-aref dst-array di) source-rgba)))
 
 (defun %fill-image-static-ink-blend (dst-array dst-width source-rgba x x2 y y2)
-  (declare (optimize (speed 3) (safety 0) (debug 1))
+  (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
            (type image-index dst-width x x2 y y2)
            (type argb-pixel source-rgba))
@@ -228,7 +228,7 @@
      ,@body))
 
 (defun %fill-image-stenciled-static-ink-flipping/blend (dst-array dst-width source-rgba x x2 y y2 stencil-array stencil-dx stencil-dy stencil-width stencil-height)
-  (declare (optimize (speed 3) (safety 0) (debug 1))
+  (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
            (type image-index dst-width x x2 y y2)
            (type argb-pixel source-rgba)
@@ -248,7 +248,7 @@
                  r.bg g.bg b.bg a.bg)))))))
 
 (defun %fill-image-stenciled-static-ink-blend (dst-array dst-width source-rgba x x2 y y2 stencil-array stencil-dx stencil-dy stencil-width stencil-height)
-  (declare (optimize (speed 3) (safety 0) (debug 1))
+  (declare #.*optimize-unsafe*
            (type argb-pixel-array dst-array)
            (type image-index dst-width x x2 y y2)
            (type argb-pixel source-rgba)
@@ -298,7 +298,7 @@ the x/y arguments are."))
                                      stencil (stencil-dx 0) (stencil-dy 0)
                                      clip-region)
   "Blends DESIGN onto IMAGE with STENCIL and a CLIP-REGION."
-  (declare (optimize (speed 3) (safety 0) (debug 1))
+  (declare #.*optimize-unsafe*
            (type image-index x y width height)
            (type (signed-byte 33) stencil-dx stencil-dy))
   ;; Disregard CLIP-REGION if x,y,width,height is entirely contained.

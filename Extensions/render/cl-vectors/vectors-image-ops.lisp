@@ -9,7 +9,7 @@
              (let-rgba ((r.fg g.fg b.fg a.fg) ink-rgba)
                (lambda (x y alpha)
                  (declare (type fixnum x y alpha)
-                          (optimize speed (safety 0) (debug 1)))
+                          #.*optimize-unsafe*)
                  (setf alpha (min (abs alpha) 255))
                  (unless (or (zerop alpha)
                              (and clip-region
@@ -25,7 +25,7 @@
           (t
            (lambda (x y alpha)
              (declare (type fixnum x y alpha)
-                      (optimize speed (safety 0) (debug 1)))
+                      #.*optimize-unsafe*)
              (setf alpha (min (abs alpha) 255))
              (unless (or (zerop alpha)
                          (and clip-region

@@ -219,6 +219,11 @@
                            (list 0.20 0.09 0.60 0.20)))))
 
 (defmethod handle-event ((pane radar-pane) (event timer-event))
+  (when (eql (frame-state (pane-frame pane)) :disowned)
+    ;; Don't do any more rendering if the frame has been closed.
+    ;; Without this the timer will lurk in the background if Gadget Test
+    ;; was opened via demodemo.
+    (return-from handle-event))
   (with-slots (points) pane
     (with-bounding-rectangle* (x1 y1 x2 y2) (sheet-region pane)
       (let ((xf (- x2 x1))

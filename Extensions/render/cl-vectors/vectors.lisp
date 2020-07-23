@@ -62,10 +62,10 @@
                                  clip-region)))
     (clim:with-bounding-rectangle* (min-x min-y max-x max-y) clip-region
       (%aa-cells-sweep/rectangle state
-                                 (floor min-x)
-                                 (floor min-y)
-                                 (ceiling max-x)
-                                 (ceiling max-y)
+                                 (floor (float min-x))
+                                 (floor (float min-y))
+                                 (ceiling (float max-x))
+                                 (ceiling (float max-y))
                                  (if (typep ink 'standard-flipping-ink)
                                      (aa-render-xor-draw-fn image current-clip-region ink)
                                      (aa-render-draw-fn image current-clip-region ink))))))
@@ -82,10 +82,10 @@
       (setf draw-function
             (aa-render-alpha-draw-fn image current-clip-region))
       (%aa-cells-sweep/rectangle state
-                                (floor min-x)
-                                (floor min-y)
-                                (ceiling max-x)
-                                (ceiling max-y)
+                                (floor (float min-x))
+                                (floor (float min-y))
+                                (ceiling (float max-x))
+                                (ceiling (float max-y))
                                 draw-function))))
 
 (defun aa-stroke-paths (medium image design paths line-style state transformation clip-region)
@@ -190,6 +190,12 @@ non-empty region.)"
         (%aa-update-state state paths mxx mxy myx myy tx ty))))
 
 (defun %aa-update-state (state paths mxx mxy myx myy tx ty)
+  (setf mxx (float mxx)
+        mxy (float mxy)
+        myx (float myx)
+        myy (float myy)
+        tx (float tx)
+        ty (float ty))
   (let ((iterator (vectors::path-iterator-segmented paths)))
     (multiple-value-bind (i1 k1 e1) (vectors::path-iterator-next iterator)
       (declare (ignore i1))
